@@ -1,7 +1,8 @@
-import {app, ServiceError} from '@getcronit/pylon'
-import {asc, eq, sql} from "drizzle-orm";
+import {app, PylonConfig, ServiceError} from '@getcronit/pylon'
+import {asc, eq} from "drizzle-orm";
 import {db} from "./db";
 import {Movie, movies} from "./schema";
+import {useErrorHandler, useLogger} from '@envelop/core'
 
 export const graphql = {
   Query: {
@@ -36,8 +37,8 @@ export const graphql = {
 
       const m = r[0];
 
-      if(!m){
-        throw new ServiceError(`Movie with ${id} not found.`, {code: "NOT_FOUND", statusCode: 404, details: {} })
+      if (!m) {
+        throw new ServiceError(`Movie with ${id} not found.`, {code: "NOT_FOUND", statusCode: 404, details: {}})
       }
 
       return {
@@ -54,5 +55,23 @@ export const graphql = {
   }
 }
 
+app.use(async (c, next) => {
+  console.log('HERE!!!!!!')
+  await next()
+})
+
+export const config: PylonConfig = {
+  plugins: [
+    useErrorHandler(({errors, context, phase}) => {
+      console.error(errors)
+    }),
+    useLogger({
+      skipIntrospection: false,
+      logFn: (eventName, args) => {
+        console.log(eventName)
+      }
+    })
+  ]
+}
 
 export default app

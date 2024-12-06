@@ -59,7 +59,7 @@ async function deleteMutation() {
 }
 
 async function updateMutation() {
-  const res = await fetch("http://localhost:3000/graphql", {
+  const res = await fetch(" http://localhost:3000/graphql", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ async function updateMutation() {
 
 
 async function run(){
-  const m = await schema()
+  const m = await updateMutation()
   console.log(m)
   //
   // const q = await query()
